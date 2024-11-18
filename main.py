@@ -1,3 +1,5 @@
+import math
+
 # Checking the correctness of the input expression
 def is_valid(expr):
     exp = expr.strip().lower()
@@ -82,3 +84,44 @@ def exp_to_rpn(expr):
         res.append(funcs.pop())
 
     return res
+
+# Calculation of an expression in rpn form
+def calc_prn(expr):
+    rpn_exp = exp_to_rpn(expr)
+    stack = []
+
+    opers = {
+        '+': lambda a, b: a + b,
+        '-': lambda a, b: a - b,
+        '*': lambda a, b: a * b,
+        '/': lambda a, b: a / b if b != 0 else (_ for _ in ()).throw(ValueError("Division by zero")),
+        'pow': lambda a, b: math.pow(a, b)
+    }
+
+    funs = {
+        # Convert the value to radians
+        'sin': lambda a: math.sin(math.radians(a)),
+        'cos': lambda a: math.cos(math.radians(a)),
+        'tan': lambda a: math.tan(math.radians(a)),
+        'ctg': lambda a: 1 / math.tan(math.radians(a)),
+        'sqrt': lambda a: math.sqrt(a)
+    }
+
+    # Do the basic calculations
+    for t in rpn_exp:
+        if t.isdigit() or '.' in t:
+            stack.append(float(t))
+        elif t in opers:
+            b = stack.pop()
+            a = stack.pop()
+            stack.append(opers[t](a, b))
+        elif t in funs:
+            a = stack.pop()
+            stack.append(funs[t](a))
+        else:
+            raise ValueError(f"Unknown token {t}")
+    return stack[0]
+
+a = '10 - 3 / 0'
+b = calc_prn(a)
+print(b)
