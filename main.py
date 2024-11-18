@@ -94,7 +94,7 @@ def calc_prn(expr):
         '+': lambda a, b: a + b,
         '-': lambda a, b: a - b,
         '*': lambda a, b: a * b,
-        '/': lambda a, b: a / b if b != 0 else (_ for _ in ()).throw(ValueError("Division by zero")),
+        '/': lambda a, b: a / b if b != 0 else (_ for _ in ()).throw(ValueError('Division by zero')),
         'pow': lambda a, b: math.pow(a, b)
     }
 
@@ -122,6 +122,18 @@ def calc_prn(expr):
             raise ValueError(f"Unknown token {t}")
     return stack[0]
 
-a = '10 - 3 / 0'
-b = calc_prn(a)
-print(b)
+# Main part
+if __name__ == '__main__':
+    while True:
+        try:
+            expr = input('Enter a mathematical expression or write "exit" (to terminate the application):')
+            if expr.lower() == 'exit':
+                print('Bye')
+                break
+            if not is_valid(expr):
+                print('Error: incorrect expression')
+                continue
+            res = calc_prn(expr)
+            print(f"Result: {res}")
+        except Exception as e:
+            print(f"Error: {e}")
